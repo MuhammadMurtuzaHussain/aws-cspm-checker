@@ -1,2 +1,2 @@
 pytest>=7
-ruff
+ruff>=0.6
