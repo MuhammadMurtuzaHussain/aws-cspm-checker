@@ -1,0 +1,347 @@
+{
+ "meta": {
+  "description": "Fictional demo account. All data is invented.",
+  "now": "2026-09-29T12:00:00+00:00"
+ },
+ "responses": {
+  "*|sts get-caller-identity": {
+   "Account": "123456789012",
+   "Arn": "arn:aws:iam::123456789012:user/demo-auditor",
+   "UserId": "AIDAEXAMPLE"
+  },
+  "*|ec2 describe-regions": {
+   "Regions": [
+    {
+     "RegionName": "eu-west-1"
+    },
+    {
+     "RegionName": "us-east-1"
+    }
+   ]
+  },
+  "*|s3control get-public-access-block --account-id 123456789012": {
+   "__error__": "NoSuchPublicAccessBlockConfiguration"
+  },
+  "*|s3api list-buckets": {
+   "Buckets": [
+    {
+     "Name": "acme-public-assets"
+    },
+    {
+     "Name": "acme-legacy-uploads"
+    },
+    {
+     "Name": "acme-app-logs"
+    },
+    {
+     "Name": "acme-secure-data"
+    }
+   ]
+  },
+  "*|s3api get-public-access-block --bucket acme-public-assets": {
+   "__error__": "NoSuchPublicAccessBlockConfiguration"
+  },
+  "*|s3api get-bucket-policy-status --bucket acme-public-assets": {
+   "PolicyStatus": {
+    "IsPublic": true
+   }
+  },
+  "*|s3api get-bucket-acl --bucket acme-public-assets": {
+   "Grants": [
+    {
+     "Grantee": {
+      "Type": "CanonicalUser",
+      "ID": "owner"
+     },
+     "Permission": "FULL_CONTROL"
+    }
+   ]
+  },
+  "*|s3api get-public-access-block --bucket acme-legacy-uploads": {
+   "__error__": "NoSuchPublicAccessBlockConfiguration"
+  },
+  "*|s3api get-bucket-policy-status --bucket acme-legacy-uploads": {
+   "__error__": "NoSuchBucketPolicy"
+  },
+  "*|s3api get-bucket-acl --bucket acme-legacy-uploads": {
+   "Grants": [
+    {
+     "Grantee": {
+      "Type": "Group",
+      "URI": "http://acs.amazonaws.com/groups/global/AllUsers"
+     },
+     "Permission": "READ"
+    },
+    {
+     "Grantee": {
+      "Type": "CanonicalUser",
+      "ID": "owner"
+     },
+     "Permission": "FULL_CONTROL"
+    }
+   ]
+  },
+  "*|s3api get-public-access-block --bucket acme-app-logs": {
+   "PublicAccessBlockConfiguration": {
+    "BlockPublicAcls": true,
+    "IgnorePublicAcls": false,
+    "BlockPublicPolicy": false,
+    "RestrictPublicBuckets": false
+   }
+  },
+  "*|s3api get-bucket-policy-status --bucket acme-app-logs": {
+   "__error__": "NoSuchBucketPolicy"
+  },
+  "*|s3api get-bucket-acl --bucket acme-app-logs": {
+   "Grants": [
+    {
+     "Grantee": {
+      "Type": "CanonicalUser",
+      "ID": "owner"
+     },
+     "Permission": "FULL_CONTROL"
+    }
+   ]
+  },
+  "*|s3api get-public-access-block --bucket acme-secure-data": {
+   "PublicAccessBlockConfiguration": {
+    "BlockPublicAcls": true,
+    "IgnorePublicAcls": true,
+    "BlockPublicPolicy": true,
+    "RestrictPublicBuckets": true
+   }
+  },
+  "*|s3api get-bucket-policy-status --bucket acme-secure-data": {
+   "__error__": "NoSuchBucketPolicy"
+  },
+  "*|s3api get-bucket-acl --bucket acme-secure-data": {
+   "Grants": [
+    {
+     "Grantee": {
+      "Type": "CanonicalUser",
+      "ID": "owner"
+     },
+     "Permission": "FULL_CONTROL"
+    }
+   ]
+  },
+  "eu-west-1|ec2 describe-security-groups": {
+   "SecurityGroups": [
+    {
+     "GroupId": "sg-0a1b2c3d",
+     "GroupName": "ssh-anywhere",
+     "IpPermissions": [
+      {
+       "IpProtocol": "tcp",
+       "IpRanges": [
+        {
+         "CidrIp": "0.0.0.0/0"
+        }
+       ],
+       "Ipv6Ranges": [],
+       "FromPort": 22,
+       "ToPort": 22
+      }
+     ]
+    },
+    {
+     "GroupId": "sg-0a1b2c3e",
+     "GroupName": "rdp-ipv6",
+     "IpPermissions": [
+      {
+       "IpProtocol": "tcp",
+       "IpRanges": [],
+       "Ipv6Ranges": [
+        {
+         "CidrIpv6": "::/0"
+        }
+       ],
+       "FromPort": 3389,
+       "ToPort": 3389
+      }
+     ]
+    },
+    {
+     "GroupId": "sg-0a1b2c3f",
+     "GroupName": "public-web",
+     "IpPermissions": [
+      {
+       "IpProtocol": "tcp",
+       "IpRanges": [
+        {
+         "CidrIp": "0.0.0.0/0"
+        }
+       ],
+       "Ipv6Ranges": [],
+       "FromPort": 80,
+       "ToPort": 80
+      },
+      {
+       "IpProtocol": "tcp",
+       "IpRanges": [
+        {
+         "CidrIp": "0.0.0.0/0"
+        }
+       ],
+       "Ipv6Ranges": [],
+       "FromPort": 443,
+       "ToPort": 443
+      }
+     ]
+    },
+    {
+     "GroupId": "sg-0a1b2c40",
+     "GroupName": "orders-db-open",
+     "IpPermissions": [
+      {
+       "IpProtocol": "tcp",
+       "IpRanges": [
+        {
+         "CidrIp": "0.0.0.0/0"
+        }
+       ],
+       "Ipv6Ranges": [],
+       "FromPort": 3306,
+       "ToPort": 3306
+      }
+     ]
+    },
+    {
+     "GroupId": "sg-0a1b2c41",
+     "GroupName": "internal-ssh",
+     "IpPermissions": [
+      {
+       "IpProtocol": "tcp",
+       "IpRanges": [
+        {
+         "CidrIp": "10.0.0.0/8"
+        }
+       ],
+       "Ipv6Ranges": [],
+       "FromPort": 22,
+       "ToPort": 22
+      }
+     ]
+    }
+   ]
+  },
+  "us-east-1|ec2 describe-security-groups": {
+   "SecurityGroups": [
+    {
+     "GroupId": "sg-0b9c8d7e",
+     "GroupName": "default",
+     "IpPermissions": [
+      {
+       "IpProtocol": "-1",
+       "IpRanges": [
+        {
+         "CidrIp": "0.0.0.0/0"
+        }
+       ],
+       "Ipv6Ranges": []
+      }
+     ]
+    },
+    {
+     "GroupId": "sg-0b9c8d7f",
+     "GroupName": "redis-cache",
+     "IpPermissions": [
+      {
+       "IpProtocol": "tcp",
+       "IpRanges": [
+        {
+         "CidrIp": "0.0.0.0/0"
+        }
+       ],
+       "Ipv6Ranges": [],
+       "FromPort": 6379,
+       "ToPort": 6379
+      }
+     ]
+    }
+   ]
+  },
+  "eu-west-1|ec2 get-ebs-encryption-by-default": {
+   "EbsEncryptionByDefault": false
+  },
+  "us-east-1|ec2 get-ebs-encryption-by-default": {
+   "EbsEncryptionByDefault": true
+  },
+  "eu-west-1|ec2 describe-volumes": {
+   "Volumes": [
+    {
+     "VolumeId": "vol-0aa1",
+     "Encrypted": false,
+     "Attachments": [
+      {
+       "InstanceId": "i-0123456789abcdef0"
+      }
+     ]
+    },
+    {
+     "VolumeId": "vol-0aa2",
+     "Encrypted": true,
+     "Attachments": []
+    }
+   ]
+  },
+  "us-east-1|ec2 describe-volumes": {
+   "Volumes": [
+    {
+     "VolumeId": "vol-0bb1",
+     "Encrypted": false,
+     "Attachments": []
+    }
+   ]
+  },
+  "eu-west-1|rds describe-db-instances": {
+   "DBInstances": [
+    {
+     "DBInstanceIdentifier": "orders-prod",
+     "Engine": "mysql",
+     "StorageEncrypted": false,
+     "PubliclyAccessible": true,
+     "Endpoint": {
+      "Address": "orders-prod.abc123.eu-west-1.rds.amazonaws.com"
+     }
+    },
+    {
+     "DBInstanceIdentifier": "reporting",
+     "Engine": "postgres",
+     "StorageEncrypted": true,
+     "PubliclyAccessible": false,
+     "Endpoint": {
+      "Address": "reporting.abc123.eu-west-1.rds.amazonaws.com"
+     }
+    }
+   ]
+  },
+  "us-east-1|rds describe-db-instances": {
+   "DBInstances": []
+  },
+  "*|iam get-account-summary": {
+   "SummaryMap": {
+    "AccountMFAEnabled": 1,
+    "AccountAccessKeysPresent": 0,
+    "Users": 3
+   }
+  },
+  "*|iam get-credential-report": {
+   "Content": "dXNlcixhcm4sdXNlcl9jcmVhdGlvbl90aW1lLHBhc3N3b3JkX2VuYWJsZWQscGFzc3dvcmRfbGFzdF91c2VkLG1mYV9hY3RpdmUsYWNjZXNzX2tleV8xX2FjdGl2ZSxhY2Nlc3Nfa2V5XzFfbGFzdF9yb3RhdGVkLGFjY2Vzc19rZXlfMl9hY3RpdmUsYWNjZXNzX2tleV8yX2xhc3Rfcm90YXRlZA0KPHJvb3RfYWNjb3VudD4sYXJuOmF3czppYW06OjEyMzQ1Njc4OTAxMjpyb290LDIwMjItMDMtMDFUMDk6MDA6MDArMDA6MDAsbm90X3N1cHBvcnRlZCwyMDI2LTA5LTAxVDEwOjAwOjAwKzAwOjAwLGZhbHNlLGZhbHNlLE4vQSxmYWxzZSxOL0ENCmFsaWNlLGFybjphd3M6aWFtOjoxMjM0NTY3ODkwMTI6dXNlci9hbGljZSwyMDI0LTAxLTEwVDA5OjAwOjAwKzAwOjAwLHRydWUsMjAyNi0wOS0yOFQwODowMDowMCswMDowMCx0cnVlLHRydWUsMjAyNi0wOC0wMVQwOTowMDowMCswMDowMCxmYWxzZSxOL0ENCmJvYixhcm46YXdzOmlhbTo6MTIzNDU2Nzg5MDEyOnVzZXIvYm9iLDIwMjQtMDUtMDJUMDk6MDA6MDArMDA6MDAsdHJ1ZSwyMDI2LTA5LTIwVDA4OjAwOjAwKzAwOjAwLGZhbHNlLHRydWUsMjAyNS0xMS0wM1QwOTowMDowMCswMDowMCxmYWxzZSxOL0ENCmNpLWRlcGxveWVyLGFybjphd3M6aWFtOjoxMjM0NTY3ODkwMTI6dXNlci9jaS1kZXBsb3llciwyMDIzLTA2LTE1VDA5OjAwOjAwKzAwOjAwLGZhbHNlLE4vQSxmYWxzZSx0cnVlLDIwMjUtMDEtMTVUMDk6MDA6MDArMDA6MDAsdHJ1ZSwyMDI2LTA5LTAxVDA5OjAwOjAwKzAwOjAwDQo=",
+   "ReportFormat": "text/csv"
+  },
+  "*|iam get-account-password-policy": {
+   "PasswordPolicy": {
+    "MinimumPasswordLength": 8,
+    "RequireSymbols": false,
+    "RequireNumbers": true,
+    "RequireUppercaseCharacters": false,
+    "RequireLowercaseCharacters": true,
+    "ExpirePasswords": false
+   }
+  },
+  "*|cloudtrail describe-trails --include-shadow-trails": {
+   "trailList": []
+  }
+ }
+}

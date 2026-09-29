@@ -1,0 +1,23 @@
+name: ci
+on:
+  push:
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.9", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: pip install -r requirements-dev.txt
+      - run: ruff check .
+      - run: sudo apt-get install -y shellcheck && shellcheck aws-posture-check
+      - run: python -m pytest -q
+      - name: Docs are up to date
+        run: python tools/gen_docs.py && git diff --exit-code docs/checks.md
+      - name: Demo scan runs
+        run: ./aws-posture-check --demo --fail-on none

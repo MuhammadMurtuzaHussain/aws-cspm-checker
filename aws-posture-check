@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# aws-posture-check: preflight wrapper around the cspm Python package.
+# Verifies tooling and credentials, then hands over to `python3 -m cspm`.
+set -euo pipefail
+
+here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+need() { command -v "$1" >/dev/null 2>&1 || { echo "error: '$1' is required but not installed" >&2; exit 2; }; }
+need python3
+
+# Offline modes need no AWS access.
+offline=0
+profile=()
+region=()
+prev=""
+for arg in "$@"; do
+  case "$arg" in
+    --demo|--fixtures|--list-checks|--help|-h|--version) offline=1 ;;
+  esac
+  [[ "$prev" == "--profile" ]] && profile=(--profile "$arg")
+  [[ "$prev" == "--region" ]] && region=(--region "$arg")
+  prev="$arg"
+done
+
+if [[ "$offline" -eq 0 ]]; then
+  need aws
+  identity="$(aws sts get-caller-identity --output text --query '[Account,Arn]' \
+    ${profile[@]+"${profile[@]}"} ${region[@]+"${region[@]}"} 2>/dev/null)" || {
+    echo "error: no valid AWS credentials. Configure a profile (aws configure sso) and retry." >&2
+    exit 2
+  }
+  arn="${identity#*$'\t'}"
+  echo "Scanning as ${arn} (read-only calls only)" >&2
+  if [[ "$arn" == *":root" ]]; then
+    echo "warning: running as the root user. Use a dedicated read-only role instead (see policies/)." >&2
+  fi
+fi
+
+PYTHONPATH="$here${PYTHONPATH:+:$PYTHONPATH}" exec python3 -m cspm "$@"
